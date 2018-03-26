@@ -170,9 +170,10 @@ namespace Alert.API.Repositories.Helpers
                 // If its a first condition it should be always AND.
                 // Filters are added to list used for created a filtered IQueryable on 
                 foreach (var condition in conditions)
-                {
+                {   
                     var filter = GetFilter(condition);
                     filter.Type = GetConditionFilterType(condition);
+                  //  if(filter.Type == FilterType.OR) 
                     filterList.Add(filter);
                 }
 
@@ -203,10 +204,20 @@ namespace Alert.API.Repositories.Helpers
                 throw new ArgumentNullException(nameof(condition), "The condition missing: value");
             }
 
-            // Convert from json camelCase for iterating later over DbSet<Alert>
-            string field = conditionArray[0].ToPascalCase();
+            string field = conditionArray[0];
             string conditionOperator = conditionArray[1];
             string value = conditionArray[2];
+
+            // Get condition type
+            // If OR then delete the 2 first to chars from string value to condition value
+            var filterType = GetConditionFilterType(condition);
+            if (filterType == FilterType.OR)
+            {
+                field = field.Remove(0, 2);
+            }
+
+            // Convert from json camelCase for iterating later over DbSet<Alert>
+            field = field.ToPascalCase();
 
 
             if (!String.IsNullOrEmpty(conditionOperator))
@@ -241,6 +252,7 @@ namespace Alert.API.Repositories.Helpers
                         };
 
                     case "EQUALS":
+                    case "NOTEQUALS":
                     case "ISLESSTHAN":
                     case "ISMORETHAN":
                     case "ISMORETHANOREQUAL":
@@ -267,18 +279,8 @@ namespace Alert.API.Repositories.Helpers
             return condition.StartsWith("OR") ? FilterType.OR : FilterType.AND;
         }
 
-//        private static string ToPascalCase(string property)
-//        {
-//            if (!string.IsNullOrWhiteSpace(property))
-//            {
-//                char[] charProperty = property.ToCharArray();
-//                charProperty[0] = char.ToUpper(charProperty[0]);
-//
-//                return new string(charProperty);
-//            }
-//
-//            return property;
-//        }
+       
+       
 
         #endregion
     }

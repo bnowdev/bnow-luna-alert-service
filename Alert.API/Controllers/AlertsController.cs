@@ -36,6 +36,20 @@ namespace Alert.API.Controllers
         public async Task<IActionResult> GetAlerts([FromQuery] string query="", [FromQuery] string sortBy="timeGeneratedDESC", [FromQuery] int pageSize = 5, [FromQuery] int pageIndex = 0)
         {
 
+            // TODO add validation for the request like BadRequest
+            if (pageSize > 50 || pageSize < 1)
+            {
+                return BadRequest();
+            }
+
+            if (pageIndex < 0)
+            {
+                return BadRequest();
+            }
+
+            
+
+
             // get the filtered alerts from Repository
             var alerts =  _alertsRepo.GetFiltered(query);
 
@@ -164,113 +178,6 @@ namespace Alert.API.Controllers
 
         }
 
-        //        // GET: api/Alerts/5
-        //        [HttpGet("{id}")]
-        //        public async Task<IActionResult> GetAlert([FromRoute] Guid id)
-        //        {
-        //            if (!ModelState.IsValid)
-        //            {
-        //                return BadRequest(ModelState);
-        //            }
-        //
-        //            var alert = await _context.Alert.SingleOrDefaultAsync(m => m.Id == id);
-        //
-        //            if (alert == null)
-        //            {
-        //                return NotFound();
-        //            }
-        //
-        //            return Ok(alert);
-        //        }
-        //
-        //        // PUT: api/Alerts/5
-        //        [HttpPut("{id}")]
-        //        public async Task<IActionResult> PutAlert([FromRoute] Guid id, [FromBody] Models.Alert alert)
-        //        {
-        //            if (!ModelState.IsValid)
-        //            {
-        //                return BadRequest(ModelState);
-        //            }
-        //
-        //            if (id != alert.Id)
-        //            {
-        //                return BadRequest();
-        //            }
-        //
-        //            _context.Entry(alert).State = EntityState.Modified;
-        //
-        //            try
-        //            {
-        //                await _context.SaveChangesAsync();
-        //            }
-        //            catch (DbUpdateConcurrencyException)
-        //            {
-        //                if (!AlertExists(id))
-        //                {
-        //                    return NotFound();
-        //                }
-        //                else
-        //                {
-        //                    throw;
-        //                }
-        //            }
-        //
-        //            return NoContent();
-        //        }
-        //
-        //        // POST: api/Alerts
-        //        [HttpPost]
-        //        public async Task<IActionResult> PostAlert([FromBody] Models.Alert alert)
-        //        {
-        //            if (!ModelState.IsValid)
-        //            {
-        //                return BadRequest(ModelState);
-        //            }
-        //
-        //            _context.Alert.Add(alert);
-        //            try
-        //            {
-        //                await _context.SaveChangesAsync();
-        //            }
-        //            catch (DbUpdateException)
-        //            {
-        //                if (AlertExists(alert.Id))
-        //                {
-        //                    return new StatusCodeResult(StatusCodes.Status409Conflict);
-        //                }
-        //                else
-        //                {
-        //                    throw;
-        //                }
-        //            }
-        //
-        //            return CreatedAtAction("GetAlert", new { id = alert.Id }, alert);
-        //        }
-        //
-        //        // DELETE: api/Alerts/5
-        //        [HttpDelete("{id}")]
-        //        public async Task<IActionResult> DeleteAlert([FromRoute] Guid id)
-        //        {
-        //            if (!ModelState.IsValid)
-        //            {
-        //                return BadRequest(ModelState);
-        //            }
-        //
-        //            var alert = await _context.Alert.SingleOrDefaultAsync(m => m.Id == id);
-        //            if (alert == null)
-        //            {
-        //                return NotFound();
-        //            }
-        //
-        //            _context.Alert.Remove(alert);
-        //            await _context.SaveChangesAsync();
-        //
-        //            return Ok(alert);
-        //        }
-        //
-        //        private bool AlertExists(Guid id)
-        //        {
-        //            return _context.Alert.Any(e => e.Id == id);
-        //        }
+      
     }
 }
